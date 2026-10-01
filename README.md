@@ -7,6 +7,7 @@ This version is a substantial modernization of the original open-source tutorial
 ## Highlights
 
 - Search cities and landmarks with OpenStreetMap Nominatim
+- Load real nearby stays from a bounded, server-side OpenStreetMap search
 - Explore richer restaurant and attraction data from Travel Advisor when configured
 - See provider-backed photos, ratings, review counts, pricing, hours, and contact details
 - Check current conditions from OpenWeather
@@ -26,7 +27,7 @@ No Google Maps key is required. The app remains usable without provider keys; Tr
 - React 19
 - Vite 8
 - React Leaflet and Leaflet
-- OpenStreetMap tiles, Nominatim search, and Overpass fallback data
+- OpenStreetMap tiles, Nominatim hotel/location search, and Overpass fallback data
 - Travel Advisor API through RapidAPI
 - OpenWeather current conditions
 - A dependency-free Node HTTP layer for secret-backed requests
@@ -80,6 +81,8 @@ The app works with its keyless OpenStreetMap path. Optional provider credentials
 ```env
 RAPIDAPI_TRAVEL_KEY=
 OPENWEATHER_API_KEY=
+NOMINATIM_API_URL=https://nominatim.openstreetmap.org/search
+OVERPASS_API_URLS=https://overpass.kumi.systems/api/interpreter,https://overpass-api.de/api/interpreter
 VITE_OVERPASS_API_URL=https://overpass-api.de/api/interpreter
 VITE_NOMINATIM_URL=https://nominatim.openstreetmap.org/search
 ```
@@ -90,7 +93,7 @@ VITE_NOMINATIM_URL=https://nominatim.openstreetmap.org/search
 
 The app requests place data after a location search, a category change, or an explicit **Search this area** action. It does not request data continuously while the map moves. Provider responses are normalized, cached in memory for ten minutes, and limited to 30 results.
 
-Restaurants and attractions prefer Travel Advisor data. Hotels and unavailable provider responses fall back to OpenStreetMap. If live place services are unavailable, the interface clearly labels a small New Delhi demo set. Weather is optional and disappears cleanly when unavailable.
+Restaurants and attractions prefer Travel Advisor data. Hotels use a bounded server-side Nominatim search, with Overpass as a secondary OpenStreetMap fallback. Unavailable provider responses also fall back to OpenStreetMap. If live place services are unavailable, the interface clearly labels a small New Delhi demo set. Weather is optional and disappears cleanly when unavailable.
 
 Nominatim and Overpass are public services with usage policies and availability limits. For high-traffic production use, configure managed or self-hosted endpoints.
 

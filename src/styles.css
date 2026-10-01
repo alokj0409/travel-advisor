@@ -405,11 +405,14 @@ input:focus-visible {
   display: grid;
   grid-template-rows: auto auto minmax(0, 1fr) auto;
   min-width: 0;
+  min-height: 0;
+  overflow: hidden;
   border-right: 1px solid var(--line);
   background: var(--surface-raised);
 }
 
 .places-panel-header {
+  grid-row: 1;
   display: grid;
   gap: 18px;
   padding: 28px 24px 20px;
@@ -501,6 +504,7 @@ input:focus-visible {
 }
 
 .data-notice {
+  grid-row: 2;
   display: grid;
   grid-template-columns: 20px 1fr;
   gap: 5px 9px;
@@ -525,9 +529,11 @@ input:focus-visible {
 }
 
 .places-list {
+  grid-row: 3;
   display: grid;
   align-content: start;
   gap: 12px;
+  min-height: 0;
   padding: 16px;
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -780,6 +786,7 @@ input:focus-visible {
 }
 
 .panel-footer {
+  grid-row: 4;
   display: flex;
   justify-content: space-between;
   gap: 12px;
@@ -960,6 +967,7 @@ input:focus-visible {
 
   .places-panel {
     order: 1;
+    overflow: visible;
     border-top: 1px solid var(--line);
     border-right: 0;
   }

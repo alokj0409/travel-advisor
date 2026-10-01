@@ -8,6 +8,10 @@ import {
   WeatherConfigurationError,
   WeatherResponseError,
 } from './providers/openWeather.js';
+import {
+  fetchOpenStreetMapPlaces,
+  OpenStreetMapResponseError,
+} from './providers/openStreetMap.js';
 
 const CACHE_TTL_MS = 10 * 60 * 1000;
 const REQUEST_TIMEOUT_MS = 12000;
@@ -53,7 +57,10 @@ export async function handleApiRequest(request, response, url) {
 }
 
 async function loadPlaces(category, center, signal) {
-  if (category === 'hotels') return { places: [], source: 'openstreetmap-fallback' };
+  if (category === 'hotels') {
+    const places = await fetchOpenStreetMapPlaces({ category, center, signal });
+    return { places, source: 'openstreetmap' };
+  }
 
   try {
     const places = await fetchTravelAdvisorPlaces({ category, center, signal });
@@ -81,7 +88,11 @@ async function respondWithProvider(response, cacheKey, loader) {
   } catch (error) {
     if (error instanceof ProviderConfigurationError || error instanceof WeatherConfigurationError) {
       sendJson(response, 503, { error: 'This data provider is not configured.' });
-    } else if (error instanceof ProviderResponseError || error instanceof WeatherResponseError) {
+    } else if (
+      error instanceof ProviderResponseError
+      || error instanceof WeatherResponseError
+      || error instanceof OpenStreetMapResponseError
+    ) {
       sendJson(response, 502, { error: 'The upstream data provider returned an error.' });
     } else if (error.name === 'AbortError') {
       sendJson(response, 504, { error: 'The upstream data provider timed out.' });

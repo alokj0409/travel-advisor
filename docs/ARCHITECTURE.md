@@ -2,7 +2,7 @@
 
 ## Overview
 
-Travel Advisor is a client-rendered React application with a small same-origin Node server. The browser talks directly to public OpenStreetMap services for tiles and location search. Secret-backed Travel Advisor and OpenWeather requests pass through the server so credentials never enter the browser bundle.
+Travel Advisor is a client-rendered React application with a small same-origin Node server. The browser talks directly to public OpenStreetMap services for tiles and location search. The server performs bounded OpenStreetMap stay searches and proxies secret-backed Travel Advisor and OpenWeather requests so credentials never enter the browser bundle.
 
 ```text
 User action
@@ -25,8 +25,9 @@ Owns the selected area, category, result filter, selected place, location-search
 Contains all third-party data concerns:
 
 - builds bounded Overpass QL queries
-- searches Nominatim only after an explicit form submission
+- searches Nominatim for locations only after an explicit form submission
 - prefers the same-origin Travel Advisor route for restaurants and attractions
+- loads stays through a bounded server-side Nominatim query, then Overpass if needed
 - requests same-origin OpenWeather data for the selected area
 - normalizes OpenStreetMap nodes, ways, and relations into one place shape
 - validates external website protocols
@@ -92,7 +93,7 @@ The UI does not read raw OpenStreetMap tags.
 
 - Fetches are abortable to prevent stale results from replacing newer searches.
 - Moving the map never triggers a background request. The user confirms with **Search this area**.
-- A small labeled New Delhi demo dataset keeps the initial project reviewable if Overpass is unavailable.
+- A small labeled New Delhi demo dataset keeps the initial project reviewable if both live OpenStreetMap search paths are unavailable.
 - Favorites use `localStorage`; they are device-local and require no account.
 - Secrets stay in `.env.local` or deployment environment variables and are never prefixed with `VITE_`.
 - The keyless OpenStreetMap path remains available when provider credentials are absent.
